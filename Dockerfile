@@ -1,7 +1,7 @@
-# 多阶段构建 - 基础环境
+# Multi-stage build - Base environment
 FROM python:3.9-slim as base
 
-# 设置环境变量
+# Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     POETRY_NO_INTERACTION=1 \
@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1 \
     POETRY_HOME="/opt/poetry" \
     POETRY_VERSION=1.7.1
 
-# 安装系统依赖
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -26,50 +26,50 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# 安装 Poetry
+# Install Poetry
 RUN pip install poetry==$POETRY_VERSION
 
-# 依赖安装阶段
+# Dependency installation stage
 FROM base as deps
 
 WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 
-# 配置 Poetry 并安装依赖
+# Configure Poetry and install dependencies
 RUN poetry config virtualenvs.create false \
     && poetry install --no-dev --no-root \
     && rm -rf $POETRY_CACHE_DIR
 
-# 生产环境
+# Production environment
 FROM base as production
 
-# 创建非 root 用户
+# Create non-root user
 RUN useradd --create-home --shell /bin/bash app
 
-# 从依赖阶段复制已安装的包
+# Copy installed packages from dependency stage
 COPY --from=deps /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 COPY --from=deps /usr/local/bin /usr/local/bin
 
-# 设置工作目录
+# Set working directory
 WORKDIR /app
 
-# 复制应用代码
+# Copy application code
 COPY . .
 
-# 设置权限
+# Set permissions
 RUN chown -R app:app /app
 USER app
 
-# 设置 MuJoCo 渲染环境
+# Set MuJoCo rendering environment
 ENV MUJOCO_GL=egl
 ENV DISPLAY=:0
 
-# 健康检查
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD python -c "import dynsyn; print('OK')" || exit 1
 
-# 暴露端口（如果有 web 界面或 API）
+# Expose ports (if there's a web interface or API)
 EXPOSE 8000
 
-# 默认命令
+# Default command
 CMD ["python", "-m", "dynsyn.sb3_runner.runner", "--help"] 

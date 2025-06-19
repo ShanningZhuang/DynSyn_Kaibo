@@ -40,7 +40,6 @@ update_system() {
     log_step "更新系统包..."
     if [[ "$OS" == "ubuntu" ]] || [[ "$OS" == "debian" ]]; then
         sudo apt-get update -y
-        sudo apt-get upgrade -y
         sudo apt-get install -y curl wget git htop
     elif [[ "$OS" == "centos" ]] || [[ "$OS" == "rhel" ]] || [[ "$OS" == "fedora" ]]; then
         sudo yum update -y

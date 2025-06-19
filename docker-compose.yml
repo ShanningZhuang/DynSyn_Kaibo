@@ -8,7 +8,7 @@ services:
       target: production
     container_name: dynsyn-training
     
-    # GPU 支持（如果需要）
+    # GPU support (if needed)
     deploy:
       resources:
         reservations:
@@ -17,37 +17,37 @@ services:
               count: all
               capabilities: [gpu]
     
-    # 环境变量
+    # Environment variables
     environment:
       - MUJOCO_GL=egl
       - CUDA_VISIBLE_DEVICES=0
       - WANDB_API_KEY=${WANDB_API_KEY:-}
     
-    # 数据卷挂载
+    # Volume mounts
     volumes:
       - ./logs:/app/logs
       - ./configs:/app/configs
       - ./results:/app/results
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     
-    # 网络设置
+    # Network settings
     network_mode: "host"
     
-    # 资源限制
+    # Resource limits
     mem_limit: 16g
     shm_size: 2g
     
-    # 重启策略
+    # Restart policy
     restart: unless-stopped
     
-    # 工作目录
+    # Working directory
     working_dir: /app
     
-    # 交互式终端
+    # Interactive terminal
     stdin_open: true
     tty: true
 
-  # 可选：Jupyter 开发环境
+  # Optional: Jupyter development environment
   jupyter:
     build:
       context: .
@@ -71,12 +71,12 @@ services:
     profiles:
       - dev
 
-# 网络配置
+# Network configuration
 networks:
   default:
     driver: bridge
 
-# 数据卷
+# Volumes
 volumes:
   logs:
   results: 
