@@ -1,0 +1,73 @@
+# Git 相关
+.git
+.gitignore
+.github
+
+# Python 缓存
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.tox
+.coverage
+.coverage.*
+.cache
+.pytest_cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis
+
+# 虚拟环境
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE 相关
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# 日志和结果
+logs/
+wandb/
+results/
+*.log
+
+# 模型文件（太大）
+*.zip
+*.pkl
+*.pt
+*.pth
+*.onnx
+
+# 数据文件
+data/
+datasets/
+
+# 文档
+*.md
+docs/
+imgs/
+
+# 临时文件
+.tmp
+tmp/
+temp/
+
+# OS 相关
+.DS_Store
+Thumbs.db
+
+# Docker 相关
+Dockerfile*
+docker-compose*
+.dockerignore 
