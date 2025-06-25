@@ -1,10 +1,11 @@
-from typing import List
+from typing import List, Optional, Union
 
 import gymnasium as gym
 from gymnasium.wrappers import *
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecVideoRecorder
+import numpy as np
 
 from dynsyn.sb3_runner.wrapper import *
 
@@ -13,7 +14,7 @@ def create_env(
     env_name: str,
     single_env_kwargs: dict,
     wrapper_list: dict,
-    env_header: str = None,
+    env_header: Optional[str] = None,
     seed: int = 0,
     render_mode: str = "rgb_array",
 ):
@@ -45,13 +46,13 @@ def create_vec_env(
     env_name,
     single_env_kwargs,
     env_nums,
-    env_header: str = None,
-    wrapper_list: dict = None,
-    monitor_dir: str = None,
-    monitor_kwargs: str = None,
+    env_header: Optional[str] = None,
+    wrapper_list: Optional[dict] = None,
+    monitor_dir: Optional[str] = None,
+    monitor_kwargs: Optional[dict] = None,
     seed: int = 0,
 ):
-    if hasattr(monitor_kwargs, "info_keywords"):
+    if monitor_kwargs and hasattr(monitor_kwargs, "info_keywords"):
         monitor_kwargs["info_keywords"] = tuple(monitor_kwargs["info_keywords"])
 
     vec_env = make_vec_env(
@@ -60,7 +61,7 @@ def create_vec_env(
             "env_header": env_header,
             "env_name": env_name,
             "single_env_kwargs": single_env_kwargs,
-            "wrapper_list": wrapper_list,
+            "wrapper_list": wrapper_list or {},
             "seed": seed,
         },
         n_envs=env_nums,
@@ -102,20 +103,37 @@ def record_video(
 
     video_frames = []
 
-    for _ in range(video_ep_num):
+    for episode_idx in range(video_ep_num):
         done = False
         total_reward = 0
+        episode_qpos = []
 
         obs = vec_env.reset()
         while not done:
+            # Get qpos data from the environment
+            try:
+                env_qpos = vec_env.get_attr('data')[0].qpos.copy()
+                episode_qpos.append(env_qpos)
+            except (AttributeError, IndexError):
+                # Fallback if direct access doesn't work
+                pass
+            
             obs = vec_norm.normalize_obs(obs)
             action, _ = model.predict(obs, deterministic=False)
             obs, r, done, info = vec_env.step(action)
             total_reward += r
 
+        # Save qpos data for this episode individually
+        if episode_qpos:
+            episode_qpos_array = np.array(episode_qpos)
+            qpos_filename = f"{name_prefix}_episode_{episode_idx}_qpos_data.npy"
+            qpos_filepath = video_dir + "/" + qpos_filename
+            np.save(qpos_filepath, episode_qpos_array)
+            print(f"Saved episode {episode_idx} qpos data to: {qpos_filepath}")
+        
         video_frames.append(vec_env.video_recorder.recorded_frames)
         video_fps = vec_env.video_recorder.frames_per_sec
-        print(f"Episode reward: {total_reward}")
+        print(f"Episode {episode_idx} reward: {total_reward}")
 
     vec_env.close()
 

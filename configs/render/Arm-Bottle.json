@@ -15,7 +15,9 @@
         "weight_reach": 10,
         "weight_lift": 0,
         "weight_act": 1,
-        "weight_done": 0
+        "weight_done": 0,
+        "width": 1024,
+        "height": 1024
     },
     "wrapper_list": {
         "MuscleNormWrapper": {}
@@ -29,8 +31,8 @@
         }
     },
     "total_timesteps": 1e7,
-    "play": false,
-    "load_model_dir": "",
+    "play": true,
+    "load_model_dir": "/home/ubuntu/DynSyn_Kaibo/logs/E2E/ArmBottle-v1/0625-013838_0/checkpoint/final",
     "check_freq": 1e6,
     "record_freq": 1e6,
     "dump_freq": 5e6,

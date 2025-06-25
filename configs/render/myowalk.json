@@ -175,7 +175,10 @@
     "env_header": "import os; import sys; from myosuite.utils import gym",
     "env_name": "myoLegWalk-v0",
     "env_nums": 256,
-    "single_env_kwargs": {},
+    "single_env_kwargs": {
+        "width": 1024,
+        "height": 1024
+    },
     "wrapper_list": {
         "MyosuiteWrapper": {}
     },
@@ -188,8 +191,8 @@
         }
     },
     "total_timesteps": 1e7,
-    "play": false,
-    "load_model_dir": "",
+    "play": true,
+    "load_model_dir": "/home/ubuntu/DynSyn_Kaibo/logs/myoLegWalk-v0/0624-182509_0/checkpoint/final",
     "load_kwargs": {
         "dynsyn_weight_amp": 0.1
     },
