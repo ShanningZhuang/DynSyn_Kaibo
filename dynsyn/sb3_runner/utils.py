@@ -1,4 +1,5 @@
 from typing import List, Optional, Union
+import time
 
 import gymnasium as gym
 from gymnasium.wrappers import *
@@ -92,7 +93,7 @@ def record_video(
         monitor_kwargs=None,
         seed=args.seed,
     )
-
+    env.render_mode = "rgb_array"
     vec_env = VecVideoRecorder(
         env,
         video_folder=video_dir,
@@ -107,30 +108,49 @@ def record_video(
         done = False
         total_reward = 0
         episode_qpos = []
-
+        episode_actions = []
+        episode_ctrl = []
         obs = vec_env.reset()
+        
         while not done:
             # Get qpos data from the environment
-            try:
-                env_qpos = vec_env.get_attr('data')[0].qpos.copy()
-                episode_qpos.append(env_qpos)
-            except (AttributeError, IndexError):
-                # Fallback if direct access doesn't work
-                pass
+            env_qpos = vec_env.get_attr('data')[0].qpos.copy()
+            action = vec_env.get_attr('data')[0].act.copy()
+            ctrl = vec_env.get_attr('data')[0].ctrl.copy()
+            
+            episode_actions.append(action)
+            episode_qpos.append(env_qpos)
+            episode_ctrl.append(ctrl)
             
             obs = vec_norm.normalize_obs(obs)
             action, _ = model.predict(obs, deterministic=False)
             obs, r, done, info = vec_env.step(action)
             total_reward += r
 
+        time_stamp = time.time()
         # Save qpos data for this episode individually
         if episode_qpos:
             episode_qpos_array = np.array(episode_qpos)
-            qpos_filename = f"{name_prefix}_episode_{episode_idx}_qpos_data.npy"
+            qpos_filename = f"{name_prefix}_episode_{episode_idx}_qpos_data_{time_stamp}.npy"
             qpos_filepath = video_dir + "/" + qpos_filename
             np.save(qpos_filepath, episode_qpos_array)
             print(f"Saved episode {episode_idx} qpos data to: {qpos_filepath}")
+            
+        # Save action data for this episode individually
+        if episode_actions:
+            episode_actions_array = np.array(episode_actions)
+            actions_filename = f"{name_prefix}_episode_{episode_idx}_actions_data_{time_stamp}.npy"
+            actions_filepath = video_dir + "/" + actions_filename
+            np.save(actions_filepath, episode_actions_array)
+            print(f"Saved episode {episode_idx} actions data to: {actions_filepath}")
         
+        # Save ctrl data for this episode individually
+        if episode_ctrl:
+            episode_ctrl_array = np.array(episode_ctrl)
+            ctrl_filename = f"{name_prefix}_episode_{episode_idx}_ctrl_data_{time_stamp}.npy"
+            ctrl_filepath = video_dir + "/" + ctrl_filename
+            np.save(ctrl_filepath, episode_ctrl_array)
+            
         video_frames.append(vec_env.video_recorder.recorded_frames)
         video_fps = vec_env.video_recorder.frames_per_sec
         print(f"Episode {episode_idx} reward: {total_reward}")

@@ -18,7 +18,8 @@
         "weight_done": 0
     },
     "wrapper_list": {
-        "MuscleNormWrapper": {}
+        "ActivationDirectWrapper": {}
+
     },
     "vec_normalize": {
         "is_norm": true,

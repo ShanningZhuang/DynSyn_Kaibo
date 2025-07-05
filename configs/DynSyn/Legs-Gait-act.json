@@ -12,7 +12,8 @@
                 ],
                 [
                     2,
-                    3
+                    3,
+                    16
                 ],
                 [
                     4
@@ -20,32 +21,31 @@
                 [
                     6,
                     23,
-                    31,
-                    32
+                    30,
+                    31
                 ],
                 [
-                    7
+                    7,
+                    12
                 ],
                 [
                     8,
                     9,
-                    35
+                    34
                 ],
                 [
                     10,
                     11,
-                    36
+                    35
                 ],
                 [
-                    12,
                     13
                 ],
                 [
-                    14,
-                    15
+                    14
                 ],
                 [
-                    16
+                    15
                 ],
                 [
                     17,
@@ -61,123 +61,146 @@
                     27
                 ],
                 [
-                    24,
-                    28
+                    24
                 ],
                 [
                     25,
                     26
                 ],
                 [
-                    29
+                    28
                 ],
                 [
-                    30
-                ],
-                [
+                    29,
                     33
                 ],
                 [
-                    34
+                    32
                 ],
                 [
+                    36,
                     37,
-                    38,
-                    39
+                    38
                 ],
                 [
+                    39,
                     40,
                     41,
-                    45
-                ],
-                [
-                    42
-                ],
-                [
-                    43
-                ],
-                [
-                    44
-                ],
-                [
+                    42,
+                    43,
+                    44,
+                    45,
                     46,
-                    63,
-                    71,
-                    72
-                ],
-                [
-                    47
-                ],
-                [
+                    47,
                     48,
-                    49,
-                    75
+                    49
                 ],
                 [
                     50,
                     51,
-                    76
-                ],
-                [
-                    52,
-                    53
-                ],
-                [
-                    54,
                     55
                 ],
                 [
-                    56
-                ],
-                [
-                    57,
-                    60,
-                    61
-                ],
-                [
-                    58,
-                    62
-                ],
-                [
-                    59,
-                    67
-                ],
-                [
-                    64,
-                    68
-                ],
-                [
-                    65,
+                    52,
+                    53,
                     66
                 ],
                 [
-                    69
+                    54
                 ],
                 [
+                    56,
+                    73,
+                    80,
+                    81
+                ],
+                [
+                    57,
+                    62
+                ],
+                [
+                    58,
+                    59,
+                    84
+                ],
+                [
+                    60,
+                    61,
+                    85
+                ],
+                [
+                    63
+                ],
+                [
+                    64
+                ],
+                [
+                    65
+                ],
+                [
+                    67,
                     70,
+                    71
+                ],
+                [
+                    68,
+                    72
+                ],
+                [
+                    69,
+                    77
+                ],
+                [
                     74
                 ],
                 [
-                    73
+                    75,
+                    76
                 ],
                 [
-                    77,
-                    78,
-                    79
+                    78
+                ],
+                [
+                    79,
+                    83
+                ],
+                [
+                    82
+                ],
+                [
+                    86,
+                    87,
+                    88
+                ],
+                [
+                    89,
+                    90,
+                    91,
+                    92,
+                    93,
+                    94,
+                    95,
+                    96,
+                    97,
+                    98,
+                    99
                 ]
             ],
             "dynsyn_log_std": 0.5
         },
         "policy": "DynSynSACPolicy",
-        "dynsyn_a": 1e6,
-        "dynsyn_k": 5e-8
+        "dynsyn_k": 5e-8,
+        "dynsyn_a": 1e6
     },
-    "env_header": "import os; import sys; from myosuite.utils import gym",
-    "env_name": "myoLegWalk-v0",
-    "env_nums": 128,
-    "single_env_kwargs": {},
+    "env_header": "import os; import sys; sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../FullBody-Model'))); import msmodel_gym",
+    "env_name": "msmodel_gym/LegsGait-v1",
+    "env_nums": 80,
+    "single_env_kwargs": {
+        "skip_frames": 5,
+        "reset_noise_scale": 0
+    },
     "wrapper_list": {
-        "MyosuiteWrapper": {}
+        "ActivationDirectWrapper": {}
     },
     "vec_normalize": {
         "is_norm": true,
@@ -190,17 +213,10 @@
     "total_timesteps": 1e7,
     "play": false,
     "load_model_dir": "",
-    "load_kwargs": {
-        "dynsyn_weight_amp": 0.1
-    },
-    "check_freq": 1e7,
-    "record_freq": 1e7,
-    "dump_freq": 1e7,
+    "check_freq": 0,
+    "record_freq": 0,
+    "dump_freq": 0,
     "reward_freq": 0,
     "log_root_dir": "./logs",
-    "seed": 0,
-    "wandb": {
-        "use_wandb": true,
-        "project_name": "DynSyn"
-    }
+    "seed": 0
 }

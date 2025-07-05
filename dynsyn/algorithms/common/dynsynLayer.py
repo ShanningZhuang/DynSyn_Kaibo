@@ -51,6 +51,8 @@ class DynSynLayerBase(nn.Module):
         return x
 
     def forward(self, x: th.Tensor, latent_pi: th.Tensor, deterministic: bool = False) -> th.Tensor:
+        if self.dynsyn_weight_amp is None:
+            self.dynsyn_weight_amp = 0
         assert self.dynsyn_weight_amp is not None, "Please set the dynsyn_weight_amp first."
         # Get the weight
         mean_weights = self.mu(latent_pi)

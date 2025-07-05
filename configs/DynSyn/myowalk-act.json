@@ -177,7 +177,7 @@
     "env_nums": 128,
     "single_env_kwargs": {},
     "wrapper_list": {
-        "MyosuiteWrapper": {}
+        "ActivationDirectWrapper": {}
     },
     "vec_normalize": {
         "is_norm": true,
